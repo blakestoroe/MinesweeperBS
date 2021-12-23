@@ -1,22 +1,15 @@
 package sample;
 
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -80,7 +73,10 @@ public class Controller implements Initializable {
         Node clickedNode = event.getPickResult().getIntersectedNode();
         Integer colIndex = GridPane.getColumnIndex(clickedNode);
         Integer rowIndex = GridPane.getRowIndex(clickedNode);
-        if(event.getButton()== MouseButton.SECONDARY && nodes[colIndex][rowIndex].shown==false){
+        if(nodes[colIndex][rowIndex].shown){
+            return;
+        }
+        if(event.getButton()== MouseButton.SECONDARY){
             if(nodes[colIndex][rowIndex].flagged){
                 nodes[colIndex][rowIndex].flagged=false;
                 nodes[colIndex][rowIndex].setFill(Color.WHITE);
@@ -88,7 +84,7 @@ public class Controller implements Initializable {
                 nodes[colIndex][rowIndex].flagged=true;
                 nodes[colIndex][rowIndex].setFill(new ImagePattern(new Image("file:///C:/Users/storoeb1/Desktop/MinesweeperBS/src/img/flag.png")));
             }
-        }else if(event.getButton()==MouseButton.PRIMARY && nodes[colIndex][rowIndex].flagged==false){
+        }else if(event.getButton()==MouseButton.PRIMARY && !nodes[colIndex][rowIndex].flagged){
             if (clickedNode != grid) {
                 drawTile(rowIndex,colIndex);
             }
@@ -107,6 +103,7 @@ public class Controller implements Initializable {
             gameStateText.setText("You Lose!");
             nodes[y][x].setFill(new ImagePattern(new Image("file:///C:/Users/storoeb1/Desktop/MinesweeperBS/src/img/bomb.png")));
         }else if(game.bottomBoard[x][y]==TileValue.NUMBER){
+            nodes[y][x].setFill(Color.DARKGRAY);
             nodes[y][x].shown=true;
             game.totalNumbersFound++;
             Text tileVal = new Text(""+game.findSurroundingBombs(x,y));
@@ -117,11 +114,16 @@ public class Controller implements Initializable {
         }else{
             nodes[y][x].setFill(Color.DARKGRAY);
             nodes[y][x].shown=true;
+
             //clear all other blank tiles recursively
             drawTileRecursively(x+1,y);
             drawTileRecursively(x-1,y);
             drawTileRecursively(x,y-1);
             drawTileRecursively(x,y+1);
+            drawTileRecursively(x+1,y+1);
+            drawTileRecursively(x-1,y-1);
+            drawTileRecursively(x-1,y+1);
+            drawTileRecursively(x+1,y-1);
         }
     }
 
@@ -138,7 +140,6 @@ public class Controller implements Initializable {
             //in this case, if the tile is clear, it will continue the recursion by itself
             //if the tile is a number, it will end the recursion.
             drawTile(x,y);
-            return;
         }
     }
 

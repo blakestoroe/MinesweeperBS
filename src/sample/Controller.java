@@ -9,6 +9,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import java.net.URL;
 import java.util.ArrayList;
@@ -103,16 +104,19 @@ public class Controller implements Initializable {
             gameStateText.setText("You Lose!");
             nodes[y][x].setFill(new ImagePattern(new Image("file:///C:/Users/storoeb1/Desktop/MinesweeperBS/src/img/bomb.png")));
         }else if(game.bottomBoard[x][y]==TileValue.NUMBER){
-            nodes[y][x].setFill(Color.DARKGRAY);
+            nodes[y][x].setFill(Color.LIGHTGRAY);
             nodes[y][x].shown=true;
             game.totalNumbersFound++;
-            Text tileVal = new Text(""+game.findSurroundingBombs(x,y));
-            tileVal.setX(xPos);
-            tileVal.setY(yPos);
+            int numBombs = game.findSurroundingBombs(x,y);
+            Text tileVal = new Text(""+numBombs);
+            tileVal.setFill(chooseColorForNumber(numBombs));
+            tileVal.setFont(Font.loadFont(getClass().getResourceAsStream("/fonts/mine-sweeper.ttf"), 20));
+            tileVal.setX(xPos-8);
+            tileVal.setY(yPos+10);
             numbers.add(tileVal);
             pane.getChildren().add(tileVal);
         }else{
-            nodes[y][x].setFill(Color.DARKGRAY);
+            nodes[y][x].setFill(Color.LIGHTGRAY);
             nodes[y][x].shown=true;
 
             //clear all other blank tiles recursively
@@ -141,6 +145,20 @@ public class Controller implements Initializable {
             //if the tile is a number, it will end the recursion.
             drawTile(x,y);
         }
+    }
+
+    public Color chooseColorForNumber(int number){
+        switch (number){
+            case 1: return Color.BLUE;
+            case 2: return Color.GREEN;
+            case 3: return Color.RED;
+            case 4: return Color.PURPLE;
+            case 5: return Color.MAROON;
+            case 6: return Color.TURQUOISE;
+            case 7: return Color.BLACK;
+            case 8: return Color.GRAY;
+        }
+        return Color.WHITE;
     }
 
     public void removeNumbers(){

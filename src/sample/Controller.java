@@ -24,11 +24,17 @@ public class Controller implements Initializable {
     @FXML
     Text gameStateText;
 
+    @FXML
+    Text bomb_text;
+    @FXML
+    Text flags_text;
+
     public MinesweeperBS game;
     GameTile[][] nodes;
     int numRows;
     int numCols;
     ArrayList<Text> numbers;
+    int numFlags;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -36,12 +42,14 @@ public class Controller implements Initializable {
     }
 
     public void setupGame(){
+        numFlags=0;
         this.numRows = grid.getRowConstraints().size();
         this.numCols = grid.getColumnConstraints().size();
         numbers = new ArrayList<>();
         nodes = new GameTile[numRows][numCols];
         game = new MinesweeperBS(grid.getRowConstraints().size(), grid.getColumnConstraints().size(), 15);
         setUpGrid();
+        bomb_text.setText(""+game.numBombs);
         game.printCurrentGame();
     }
 
@@ -77,14 +85,19 @@ public class Controller implements Initializable {
         if(nodes[colIndex][rowIndex].shown){
             return;
         }
+        //flag
         if(event.getButton()== MouseButton.SECONDARY){
             if(nodes[colIndex][rowIndex].flagged){
+                numFlags--;
                 nodes[colIndex][rowIndex].flagged=false;
                 nodes[colIndex][rowIndex].setFill(Color.WHITE);
             }else{
+                numFlags++;
                 nodes[colIndex][rowIndex].flagged=true;
                 nodes[colIndex][rowIndex].setFill(new ImagePattern(new Image("file:///C:/Users/storoeb1/Desktop/MinesweeperBS/src/img/flag.png")));
             }
+            flags_text.setText(""+numFlags);
+        //clear
         }else if(event.getButton()==MouseButton.PRIMARY && !nodes[colIndex][rowIndex].flagged){
             if (clickedNode != grid) {
                 drawTile(rowIndex,colIndex);
@@ -168,9 +181,15 @@ public class Controller implements Initializable {
     }
 
     public void resetGame(){
+        fixScoreboard();
         editGameStateText(" ");
         removeNumbers();
         setupGame();
+    }
+
+    public void fixScoreboard(){
+        this.numFlags=0;
+        flags_text.setText(""+this.numFlags);
     }
 
     public void editGameStateText(String text){

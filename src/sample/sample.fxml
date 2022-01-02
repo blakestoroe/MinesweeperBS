@@ -57,6 +57,10 @@
                   <Font size="19.0" />
                </font>
             </Text>
+            <Text layoutX="350.0" layoutY="191.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Bombs: " />
+            <Text layoutX="350.0" layoutY="208.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Flags:" />
+            <Text fx:id="bomb_text" layoutX="393.0" layoutY="191.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
+            <Text fx:id="flags_text" layoutX="382.0" layoutY="208.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
          </children></AnchorPane>
    </children>
 </GridPane>
